@@ -20,6 +20,11 @@ import {connect} from 'react-redux';
 
 let suggestions = [];
 
+/*
+fetches a list of podcast genres from backend and converts to array containing
+objects with genre label and id properties
+saves the array in global suggestions variable
+*/
 async function fetchAPIGenres() {
   let res = await axios.get('/api/genre/apilist');
   let APIgenresList = res.data.genres;
@@ -60,6 +65,10 @@ const styles = theme => ({
   }
 });
 
+/*
+customizes rendering of input
+not clear what's happening with inputProps, ref, inputRef etc.
+*/
 function renderInputComponent(inputProps) {
   const {classes, inputRef = () => {}, ref, ...other} = inputProps;
 
@@ -86,6 +95,11 @@ function renderInputComponent(inputProps) {
   );
 }
 
+/*
+renders suggested genres
+according to library match calculates the characters to highlight in text based
+on query param and parse breaks the given text into parts based on matches
+*/
 function renderSuggestion(suggestion, {query, isHighlighted}) {
   const matches = match(suggestion.label, query);
   const parts = parse(suggestion.label, matches);
@@ -109,6 +123,11 @@ function renderSuggestion(suggestion, {query, isHighlighted}) {
   );
 }
 
+/*
+takes input value and returns five genres where input matches beginning of
+genre label
+deburr removes accents and other diacritical marks from strings
+*/
 function getSuggestions(value) {
   const inputValue = deburr(value.trim()).toLowerCase();
   const inputLength = inputValue.length;
@@ -141,18 +160,27 @@ class IntegrationAutosuggest extends React.Component {
     reDirect: false
   };
 
+  /*
+  sets state with five genre suggestions
+  */
   handleSuggestionsFetchRequested = ({value}) => {
     this.setState({
       suggestions: getSuggestions(value)
     });
   };
 
+  /*
+  clears suggestion state
+  */
   handleSuggestionsClearRequested = () => {
     this.setState({
       suggestions: []
     });
   };
 
+  /*
+  returns a function that sets the single property on state to newValue
+  */
   handleChange = name => (event, {newValue}) => {
     this.setState({
       [name]: newValue
@@ -163,30 +191,48 @@ class IntegrationAutosuggest extends React.Component {
     fetchAPIGenres();
   }
 
+  /*
+  creates new channel from search input in database and redirects to the
+  created channel
+  */
   createAndRenderChannel = () => async event => {
     event.preventDefault();
     try {
       let searchInput = this.state.single;
+      //matchingId seems to refer to the genre that matches the search input
       let matchingId = suggestions.filter(sugg => sugg.label === searchInput);
       let genreId = matchingId[0].id;
+
+      /*
+      this makes a call to the backend which retrieves a list of the best
+      podcasts in the given genre from the ListenNotes API
+      */
       let res = await axios.get(`/api/podcast?id=${genreId}`);
+
+      /*
+      channelList is an object that contains a list of podcasts in its
+      channels property
+      */
       let channelList = res.data;
 
       if (channelList.channels === undefined) {
         throw new Error('channelList is undefined');
       }
 
+      /*
+      The best podcasts in category list does not contain episode data for those
+      podcasts so fetchCategoryPodcastsEpisodeData gets the episodes for those
+      podcasts and sets them to the Redux state
+      */
       this.props.fetchCategoryPodcastsEpisodeData(channelList.channels);
 
-      // let randomPodcast =
-      //   channelList.channels[Math.floor(Math.random() * channelList.channels.length + 1)];
-      // if (randomPodcast === undefined) throw new Error('randomPodcast is undefined')
-      // this.props.setSinglePodcast(randomPodcast);
-      // this.props.setPodcastList(channelList.channels);
-
+      /*
+      creates new channel
+      */
       const createdChannel = await axios.post('/api/channel', {
         name: searchInput
       });
+
       this.setState({
         id: createdChannel.data.id,
         reDirect: true
