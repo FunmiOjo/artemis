@@ -242,6 +242,7 @@ class IntegrationAutosuggest extends React.Component {
     }
   };
 
+//renders form with autosuggest
   render() {
     const {classes} = this.props;
 
@@ -293,8 +294,6 @@ class IntegrationAutosuggest extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    // setSinglePodcast: podcast => dispatch(setSinglePodcast(podcast)),
-    // setPodcastList: podcasts => dispatch(setPodcastList(podcasts)),
     fetchCategoryPodcastsEpisodeData: podcasts =>
       dispatch(fetchCategoryPodcastsEpisodeData(podcasts))
   };
