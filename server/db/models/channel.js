@@ -19,7 +19,6 @@ Channel.prototype.incrementScore = async function(epTags) {
   chanTags.forEach(chanTag => {
     if (epTags.includes(chanTag.name)) {
       let score = chanTag.score || 0.5;
-      // console.log("CHAN TAGS", chanTags);
       this.addTag(chanTag, {
         through: {
           score: score * INCREMENTER + score
