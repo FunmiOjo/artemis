@@ -1,22 +1,18 @@
-import React from 'react';
-import axios from 'axios';
-import PropTypes from 'prop-types';
-import {Redirect} from 'react-router';
-import deburr from 'lodash/deburr';
-import Autosuggest from 'react-autosuggest';
-import match from 'autosuggest-highlight/match';
-import parse from 'autosuggest-highlight/parse';
-import {TextField, Typography} from '@material-ui/core';
-import Paper from '@material-ui/core/Paper';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import {withStyles} from '@material-ui/core/styles';
-import {
-  setSinglePodcast,
-  setPodcastList,
-  fetchCategoryPodcastsEpisodeData
-} from '../reducers/podcast';
-import {connect} from 'react-redux';
+import React from "react";
+import axios from "axios";
+import PropTypes from "prop-types";
+import {Redirect} from "react-router";
+import deburr from "lodash/deburr";
+import Autosuggest from "react-autosuggest";
+import match from "autosuggest-highlight/match";
+import parse from "autosuggest-highlight/parse";
+import {TextField, Typography} from "@material-ui/core";
+import Paper from "@material-ui/core/Paper";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import {withStyles} from "@material-ui/core/styles";
+import {fetchCategoryPodcastsEpisodeData} from "../reducers/podcast";
+import {connect} from "react-redux";
 
 let suggestions = [];
 
@@ -26,7 +22,7 @@ objects with genre label and id properties
 saves the array in global suggestions variable
 */
 async function fetchAPIGenres() {
-  let res = await axios.get('/api/genre/apilist');
+  let res = await axios.get("/api/genre/apilist");
   let APIgenresList = res.data.genres;
   suggestions = APIgenresList.map(genre => ({
     label: genre.name,
@@ -40,34 +36,33 @@ const styles = theme => ({
     flexGrow: 1
   },
   container: {
-    position: 'relative'
+    position: "relative"
   },
   suggestionsContainerOpen: {
-    position: 'absolute',
+    position: "absolute",
     zIndex: 1,
     marginTop: theme.spacing.unit,
     left: 0,
     right: 0
   },
   suggestion: {
-    display: 'block'
+    display: "block"
   },
   suggestionsList: {
     margin: 0,
     padding: 0,
-    listStyleType: 'none'
+    listStyleType: "none"
   },
   divider: {
     height: theme.spacing.unit * 2
   },
   input: {
-    marginTop: '1rem'
+    marginTop: "1rem"
   }
 });
 
 /*
 customizes rendering of input
-not clear what's happening with inputProps, ref, inputRef etc.
 */
 function renderInputComponent(inputProps) {
   const {classes, inputRef = () => {}, ref, ...other} = inputProps;
@@ -154,7 +149,7 @@ function getSuggestionValue(suggestion) {
 
 class IntegrationAutosuggest extends React.Component {
   state = {
-    single: '',
+    single: "",
     suggestions: [],
     id: 0,
     reDirect: false
@@ -216,7 +211,7 @@ class IntegrationAutosuggest extends React.Component {
       let channelList = res.data;
 
       if (channelList.channels === undefined) {
-        throw new Error('channelList is undefined');
+        throw new Error("channelList is undefined");
       }
 
       /*
@@ -229,7 +224,7 @@ class IntegrationAutosuggest extends React.Component {
       /*
       creates new channel
       */
-      const createdChannel = await axios.post('/api/channel', {
+      const createdChannel = await axios.post("/api/channel", {
         name: searchInput
       });
 
@@ -242,7 +237,7 @@ class IntegrationAutosuggest extends React.Component {
     }
   };
 
-//renders form with autosuggest
+  //renders form with autosuggest
   render() {
     const {classes} = this.props;
 
@@ -266,9 +261,9 @@ class IntegrationAutosuggest extends React.Component {
             {...autosuggestProps}
             inputProps={{
               classes,
-              placeholder: 'Search',
+              placeholder: "Search",
               value: this.state.single,
-              onChange: this.handleChange('single')
+              onChange: this.handleChange("single")
             }}
             theme={{
               container: classes.container,
