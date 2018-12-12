@@ -196,7 +196,6 @@ class SingleChannel extends React.Component {
 
   async handleEpisodeEnd() {
     //add episode that just ended to played episodes
-    //const episodeThatJustEnded = this.state.episode;
     const channelId = this.props.match.params.channelId;
 
     //get new episode from queue
