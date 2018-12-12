@@ -3,14 +3,9 @@ import {withRouter} from "react-router";
 import PodcastPlayer from "./player/PodcastPlayer";
 import {connect} from "react-redux";
 import axios from "axios";
-import {
-  getRandomIndex,
-  convertPlayedEpisodesArrayToObject,
-  getGenreIdFromGenreName
-} from "../utilities";
+import {getRandomIndex, getGenreIdFromGenreName} from "../utilities";
 import {
   setSinglePodcast,
-  setPodcastList,
   fetchCategoryPodcastsEpisodeData,
   fetchPlayedEpisodes,
   addPlayedEpisode,
@@ -33,48 +28,8 @@ class SingleChannel extends React.Component {
     this.handleSkip = this.handleSkip.bind(this);
     this.handleEpisodeEnd = this.handleEpisodeEnd.bind(this);
     this.addNewEpisodeToQueue = this.addNewEpisodeToQueue.bind(this);
-
-    //this.setEpisode = this.setEpisode.bind(this);
     this.setTags = this.setTags.bind(this);
-    //this.setNewEpisode = this.setNewEpisode.bind(this);
   }
-
-  // setEpisode = async function(episodeId) {
-  //   const channelId = this.props.match.params.channelId;
-  //   const res = await axios.get(`/api/episode/apiEpisode?id=${episodeId}`);
-  //   const podcastTitle = res.data.title;
-  //   const podcastImage = res.data.image;
-  //   const episode = res.data.episodes[0];
-  //   episode.channelId = channelId;
-  //   episode.podcastTitle = podcastTitle;
-  //   episode.podcastImageURL = podcastImage;
-
-  //   let req = await axios.post('/api/episode', episode);
-  //   let newEpisode = req.data;
-  //   this.setState({
-  //     episode: newEpisode
-  //   });
-  //   this.setTags(newEpisode);
-  //   this.props.setSinglePodcast({});
-  // };
-
-  // setNewEpisode = async function(episode) {
-  //   let episodeId = episode.id;
-  //   let channelId = this.props.match.params.channelId;
-  //   // await axios.post("/api/episode/nextEpisode", {
-  //   //   episodeId,
-  //   //   channelId
-  //   // });
-  //   this.setState({
-  //     episode
-  //   });
-  //   await axios.post('/api/episode/nextEpisode', {
-  //     episodeId,
-  //     channelId
-  //   });
-  //   this.setTags(episode);
-  //   this.props.setSinglePodcast({});
-  // };
 
   setTags = async function(episode) {
     const description = episode.description;
@@ -148,7 +103,6 @@ class SingleChannel extends React.Component {
   async getNewEpisodeFromRecommendedEpisodes() {
     const channelId = this.props.match.params.channelId;
     let episode = await this.props.fetchRecommendedEpisodes(channelId);
-    console.log("REC EP", episode);
     return episode;
   }
 
@@ -257,7 +211,6 @@ class SingleChannel extends React.Component {
 
   async handleSkip() {
     //add episode that was playing before skip to played episodes
-    //const episodeSkipped = this.state.episode;
     const channelId = this.props.match.params.channelId;
 
     //get new episode
@@ -268,25 +221,6 @@ class SingleChannel extends React.Component {
       episode: newEpisode
     });
     this.addNewEpisodeToQueue();
-    // const episodeId = await this.props.episodeId;
-    // if (episodeId !== undefined) {
-    //   this.setEpisode(episodeId);
-    // } else {
-    //   let res = await axios.get(
-    //     `/api/channel?id=${this.props.match.params.channelId}`
-    //   );
-    //   let playedEpisodes = res.data[0].episodes;
-    //   // console.log(playedEpisodes);
-    //   let episodeDates = playedEpisodes.map(episode =>
-    //     new Date(episode.date).getTime());
-    //   let currentEpisodeDate = Math.max(...episodeDates);
-    //   let currentEpisode = playedEpisodes.find(
-    //     episode => new Date(episode.date).getTime() === currentEpisodeDate
-    //   );
-    // this.setState({
-    //   episode: currentEpisode
-    // });
-    //this.setTags(); //
   }
 
   render() {
@@ -330,7 +264,6 @@ const mapDispatchToProps = dispatch => {
     fetchRecommendedEpisodes: channelId =>
       dispatch(fetchRecommendedEpisodes(channelId)),
     setSinglePodcast: episode => dispatch(setSinglePodcast(episode))
-    // setPodcastList: episodes => dispatch(setPodcastList(episodes))
   };
 };
 
