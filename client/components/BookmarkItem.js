@@ -1,13 +1,13 @@
-import React from 'react';
-import {Redirect} from 'react-router';
-import axios from 'axios';
-import {withStyles} from '@material-ui/core/styles';
-import {GridListTile, GridListTileBar, ButtonBase} from '@material-ui/core';
+import React from "react";
+import {Redirect} from "react-router";
+import axios from "axios";
+import {withStyles} from "@material-ui/core/styles";
+import {GridListTile, GridListTileBar, ButtonBase} from "@material-ui/core";
 
 const styles = theme => ({
   bookmarkTitle: {
-    backgroundColor: 'rgba(115, 153, 158, 0.8)',
-    height: '40%'
+    backgroundColor: "rgba(115, 153, 158, 0.8)",
+    height: "40%"
   },
   bookmark: {
     margin: 8
@@ -43,12 +43,12 @@ class BookmarkItem extends React.Component {
   render() {
     const {classes} = this.props;
     const singleEp = this.state.singleEpisode;
-    console.log(singleEp);
+
     if (this.state.cliked) {
       return (
         <Redirect
           to={{
-            pathname: '/bookmarkplayer',
+            pathname: "/bookmarkplayer",
             state: {
               episode: singleEp
             }

@@ -1,28 +1,16 @@
 import axios from "axios";
 import {
   getRandomNonRepeatingIndices,
-  setLocalStorage,
   convertPlayedEpisodesArrayToObject
 } from "../utilities";
 
 const SET_PODCAST = "SET_PODCAST";
 const SET_PODCAST_LIST = "SET_PODCAST_LIST";
 const SET_BEST_CATEGORY_PODCASTS = "SET_BEST_CATEGORY_PODCASTS";
-const SET_CURRENT_EPISODE = "SET_CURRENT_EPISODE";
 const SET_PLAYED_EPISODES = "SET_PLAYED_EPISODES";
 const SET_ADDED_PLAYED_EPISODE = "SET_ADDED_PLAYED_EPISODE";
 const SET_RECOMMENDED_EPISODES = "SET_RECOMMENDED_EPISODES";
 const SET_EPISODE_LOADING_STATUS = "SET_EPISODE_LOADING_STATUS";
-// if (localStorage.getItem('podcastState') === null) {
-//     localStorage.setItem('podcastState', JSON.stringify({
-//     podcast: {},
-//     podcastList: [],
-//     bestCategoryPodcasts: [],
-//     recommendedEpisodes: []
-//   }))
-// }
-
-// const initState = JSON.parse(localStorage.getItem('podcastState'))
 
 const initState = {
   podcast: {},
@@ -168,7 +156,6 @@ export default function(state = initState, action) {
         podcastList: action.podcastList
       };
     case SET_BEST_CATEGORY_PODCASTS:
-      //const newState = setLocalStorage('podcastState', action.podcasts, 'bestCategoryPodcasts')
       return {
         ...state,
         bestCategoryPodcasts: action.podcasts

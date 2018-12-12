@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Episode, Bookmark, bookmarks } = require("../db/models");
+const {User, Bookmark} = require("../db/models");
 module.exports = router;
 
 router.get("/", async (req, res, next) => {

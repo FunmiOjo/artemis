@@ -1,35 +1,33 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { withStyles } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Button from '@material-ui/core/Button';
-import { connect } from 'react-redux';
-import classNames from 'classnames';
-import { auth, clearError } from '../reducers/user';
-import { Typography, FormGroup } from '@material-ui/core';
+import React, {Component} from "react";
+import {Link} from "react-router-dom";
+import {withStyles} from "@material-ui/core/styles";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import {connect} from "react-redux";
+import {auth, clearError} from "../reducers/user";
+import {Typography, FormGroup} from "@material-ui/core";
 
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
-    width: '100px',
-    height: '30px'
+    width: "100px",
+    height: "30px"
   },
   input: {
-    display: 'none'
+    display: "none"
   },
   root: {
     flexGrow: 1
   },
   container: {
-    display: 'flex',
-    flexWrap: 'no-wrap',
-    alignItems: 'baseline'
+    display: "flex",
+    flexWrap: "no-wrap",
+    alignItems: "baseline"
   },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,
-    backgroundColor: 'transparent'
+    backgroundColor: "transparent"
   },
   dense: {
     marginTop: 16
@@ -38,26 +36,26 @@ const styles = theme => ({
     width: 200
   },
   authLabel: {
-    color: '#424242',
-    fontSize: '1.25rem',
-    margin: '8px'
+    color: "#424242",
+    fontSize: "1.25rem",
+    margin: "8px"
   },
   authGroup: {
-    alignItems: 'baseline'
+    alignItems: "baseline"
   },
   link: {
     color: theme.palette.secondary.main,
-    textDecoration: 'none',
-    '&:hover': {
-      textDecoration: 'underline'
+    textDecoration: "none",
+    "&:hover": {
+      textDecoration: "underline"
     },
-    '&visited': {
+    "&visited": {
       color: theme.palette.secondary.main
     },
-    '&active': {
+    "&active": {
       color: theme.palette.secondary.main
     },
-    '&focus': {
+    "&focus": {
       color: theme.palette.secondary.main
     }
   }
@@ -65,17 +63,17 @@ const styles = theme => ({
 
 class AuthForm extends Component {
   render() {
-    let { name, displayName, handleSubmit, error, classes } = this.props;
+    let {name, displayName, handleSubmit, error, classes} = this.props;
 
     return (
       <div>
         <div>
           <Typography variant="display1">
-            {name === 'login' ? 'Log in' : 'Create an account'}
+            {name === "login" ? "Log in" : "Create an account"}
           </Typography>
           <Typography variant="subheading">
-            or{' '}
-            {name === 'login' ? (
+            or{" "}
+            {name === "login" ? (
               <Link
                 className={classes.link}
                 to="/signup"
@@ -144,16 +142,16 @@ class AuthForm extends Component {
 
 const mapLogin = state => {
   return {
-    name: 'login',
-    displayName: 'Login',
+    name: "login",
+    displayName: "Login",
     error: state.user.error
   };
 };
 
 const mapSignup = state => {
   return {
-    name: 'signup',
-    displayName: 'Sign Up',
+    name: "signup",
+    displayName: "Sign Up",
     error: state.user.error
   };
 };
