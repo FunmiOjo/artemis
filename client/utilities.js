@@ -36,3 +36,7 @@ export const getGenreIdFromGenreName = (name, genres) => {
   }
   return new Error("There is no genre with that name available.");
 };
+
+export const zeroPad = num => {
+  return num > 9 ? num : `0${num}`;
+};

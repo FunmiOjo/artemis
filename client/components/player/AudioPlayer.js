@@ -12,6 +12,7 @@ import VolumeUp from "@material-ui/icons/VolumeUp";
 import VolumeOff from "@material-ui/icons/VolumeOff";
 import axios from "axios";
 import SoundVolume from "./SoundVolume";
+import {zeroPad} from "../../utilities";
 
 let episodeAudio = new Audio();
 
@@ -216,7 +217,7 @@ class AudioPlayer extends Component {
   render() {
     const currentTimeInString = this.currentTimeCalculation();
     const durationInMin = parseInt(episodeAudio.duration / 60, 10);
-    const durationInSec = parseInt(episodeAudio.duration % 60);
+    const durationInSec = parseInt(episodeAudio.duration % 60, 10);
 
     return (
       <div>
@@ -281,7 +282,8 @@ class AudioPlayer extends Component {
           </div>
           {durationInMin && durationInSec ? (
             <div style={{float: "right", flexGrow: "1"}}>
-              {currentTimeInString} | {durationInMin}:{durationInSec}
+              {currentTimeInString} | {zeroPad(durationInMin)}:
+              {zeroPad(durationInSec)}
             </div>
           ) : (
             <div />
