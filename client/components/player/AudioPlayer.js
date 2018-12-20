@@ -71,6 +71,8 @@ class AudioPlayer extends Component {
         disliked: false
       });
     });
+
+    this.play();
   }
 
   componentWillUnmount() {
@@ -97,6 +99,7 @@ class AudioPlayer extends Component {
       const {episode} = this.props;
       episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
       episodeAudio.load();
+      this.play();
     }
   }
 
