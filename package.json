@@ -50,7 +50,7 @@
 	"scripts": {
 		"build-client": "webpack",
 		"build-client-watch": "webpack -w",
-		"start": "node ./server",
+		"start": "npm run build-client & node ./server",
 		"start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
 		"start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
 		"build": "react-scripts build",
