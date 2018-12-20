@@ -44,6 +44,8 @@ class AudioPlayer extends Component {
     const {episode} = this.props;
     episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
     episodeAudio.load();
+    episodeAudio.volume = this.state.audioVolume;
+
     episodeAudio.addEventListener("loadedmetadata", () => {
       this.setState({
         audioLength: episodeAudio.duration
