@@ -11,7 +11,7 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import Button from "@material-ui/core/Button";
 import {withStyles} from "@material-ui/core/styles";
-import {fetchCategoryPodcastsEpisodeData} from "../reducers/podcast";
+import {fetchCategoryPodcasts} from "../reducers/podcast";
 import {connect} from "react-redux";
 
 let suggestions = [];
@@ -219,7 +219,7 @@ class IntegrationAutosuggest extends React.Component {
       podcasts so fetchCategoryPodcastsEpisodeData gets the episodes for those
       podcasts and sets them to the Redux state
       */
-      this.props.fetchCategoryPodcastsEpisodeData(channelList.channels);
+      this.props.fetchCategoryPodcasts(channelList.channels);
 
       /*
       creates new channel
@@ -289,8 +289,7 @@ class IntegrationAutosuggest extends React.Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCategoryPodcastsEpisodeData: podcasts =>
-      dispatch(fetchCategoryPodcastsEpisodeData(podcasts))
+    fetchCategoryPodcasts: podcasts => dispatch(fetchCategoryPodcasts(podcasts))
   };
 };
 
