@@ -4,7 +4,7 @@ import axios from "axios";
 const SET_USER_CHANNELS = "SET_USER_CHANNELS";
 const SET_USER_CHANNELS_ERROR_STATUS = "SET_USER_CHANNELS_ERROR_STATUS";
 const SET_USER_CHANNELS_LOADING_STATUS = "SET_USER_CHANNELS_LOADING_STATUS";
-const GOT_ACTIVE_CHANNEL = "GOT_ACTIVE_CHANNEL";
+const SET_ACTIVE_CHANNEL = "SET_ACTIVE_CHANNEL";
 const UPDATED_ACTIVE_CHANNEL_TAGS = "UPDATED_ACTIVE_CHANNEL_TAGS";
 
 //ACTION CREATORS
@@ -29,9 +29,9 @@ const setUserChannelsLoadingStatus = status => {
   };
 };
 
-const gotActiveChannel = channel => {
+const setActiveChannel = channel => {
   return {
-    type: GOT_ACTIVE_CHANNEL,
+    type: SET_ACTIVE_CHANNEL,
     channel
   };
 };
@@ -60,11 +60,11 @@ export const fetchUserChannels = () => {
   };
 };
 
-export const getActiveChannel = channelId => {
+export const fetchActiveChannel = channelId => {
   return async dispatch => {
     try {
       const {data: channel} = await axios.get(`/api/channel/${channelId}`);
-      dispatch(gotActiveChannel(channel));
+      dispatch(setActiveChannel(channel));
     } catch (err) {
       console.error(err);
     }
@@ -118,7 +118,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         userChannelsError: action.status
       };
-    case GOT_ACTIVE_CHANNEL: {
+    case SET_ACTIVE_CHANNEL: {
       return {
         ...state,
         activeChannel: action.channel

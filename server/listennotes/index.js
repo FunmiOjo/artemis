@@ -53,12 +53,16 @@ Because of Listen Notes API setup, we must first get the best podcasts in a genr
 another request for the episodes attached to them.  In between, we select one episode each from
 five of the best podcasts
 */
-const getGenreEpisodes = async genreId => {
+const getGenreEpisodes = async (genreId, desiredNumEpisodes) => {
   const podcastsWithoutEpisodes = await getBestPodcastsInGenre(genreId);
 
   const desiredNumPodcasts =
-    podcastsWithoutEpisodes.length < 5 ? podcastsWithoutEpisodes.length : 5;
+    podcastsWithoutEpisodes.length < desiredNumEpisodes
+      ? podcastsWithoutEpisodes.length
+      : desiredNumEpisodes;
+
   const numPodcastsToSelectFrom = podcastsWithoutEpisodes.length;
+
   const selectedPodcasts = getSelectedItems({
     items: podcastsWithoutEpisodes,
     desiredNumItems: desiredNumPodcasts,
@@ -69,7 +73,7 @@ const getGenreEpisodes = async genreId => {
     selectedPodcasts
   );
 
-  const podcastsWithSelectedEpisodes = selectedPodcastsWithEpisodes.map(
+  const selectedPodcastsWithSelectedEpisodes = selectedPodcastsWithEpisodes.map(
     podcast => {
       podcast.episodes = getSelectedItems({
         items: podcast.episodes,
@@ -80,7 +84,7 @@ const getGenreEpisodes = async genreId => {
     }
   );
 
-  return podcastsWithSelectedEpisodes;
+  return selectedPodcastsWithSelectedEpisodes;
 };
 
-module.exports = {getBestPodcastsInGenre, getGenreEpisodes};
+module.exports = {getGenreEpisodes};

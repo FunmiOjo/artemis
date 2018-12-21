@@ -4,12 +4,14 @@ import PodcastPlayer from "./player/PodcastPlayer";
 import {connect} from "react-redux";
 import axios from "axios";
 import {getRandomIndex, getGenreIdFromGenreName} from "../utilities";
+import {fetchActiveChannel} from "../reducers/channel";
 import {
   setSinglePodcast,
-  fetchCategoryPodcastsEpisodeData,
+  fetchCategoryPodcasts,
   fetchPlayedEpisodes,
   addPlayedEpisode,
-  fetchRecommendedEpisodes
+  fetchRecommendedEpisodes,
+  setRemovedBestCategoryPodcast
 } from "../reducers/podcast";
 import genres from "../genreList";
 import Loading from "./Loading";
@@ -48,7 +50,8 @@ class SingleChannel extends React.Component {
 
   async componentDidMount() {
     const {channelId} = this.props.match.params;
-    await this.getGenrePodcasts();
+    await this.props.fetchActiveChannel(channelId);
+    await this.props.fetchCategoryPodcasts(this.props.channelName);
     await this.props.fetchPlayedEpisodes(channelId);
     await this.props.fetchRecommendedEpisodes(channelId);
 
@@ -68,20 +71,6 @@ class SingleChannel extends React.Component {
       episode: newEpisode
     });
     await this.props.addPlayedEpisode(newEpisode, channelId);
-  }
-
-  async getGenrePodcasts() {
-    const {data: channel} = await axios.get(
-      `/api/channel/${this.props.match.params.channelId}`
-    );
-    const genreId = getGenreIdFromGenreName(channel.name, genres);
-    const {data: podcastsWithoutData} = await axios.get(
-      `/api/podcast?id=${genreId}`
-    );
-
-    await this.props.fetchCategoryPodcastsEpisodeData(
-      podcastsWithoutData.channels
-    );
   }
 
   extractMostRecentlyPlayedEpisode() {
@@ -108,24 +97,26 @@ class SingleChannel extends React.Component {
 
   getNewEpisodeFromCategoryPodcast() {
     const {bestCategoryPodcasts} = this.props;
-    let counter = 0;
-    let podcastIndex, podcast, episodeIndex, episode;
+    const episode = bestCategoryPodcasts[0].episodes[0];
+    this.props.removePodcast(bestCategoryPodcasts[0]);
+    // let counter = 0;
+    // let podcastIndex, podcast, episodeIndex, episode;
 
-    while (!this.episodeHasNotBeenPlayed(episode)) {
-      podcastIndex = getRandomIndex(bestCategoryPodcasts.length);
-      podcast = bestCategoryPodcasts[podcastIndex];
+    // while (!this.episodeHasNotBeenPlayed(episode)) {
+    //   podcastIndex = getRandomIndex(bestCategoryPodcasts.length);
+    //   podcast = bestCategoryPodcasts[podcastIndex];
 
-      episodeIndex = getRandomIndex(podcast.episodes.length);
-      episode = podcast.episodes[episodeIndex];
-      episode.podcastTitle = podcast.title;
-      episode.podcastImageURL = podcast.image;
+    //   episodeIndex = getRandomIndex(podcast.episodes.length);
+    //   episode = podcast.episodes[episodeIndex];
+    //   episode.podcastTitle = podcast.title;
+    //   episode.podcastImageURL = podcast.image;
 
-      counter++;
-      if (counter > 50) {
-        this.getGenrePodcasts();
-        return episode;
-      }
-    }
+    //   counter++;
+    //   if (counter > 50) {
+    //     this.getGenrePodcasts();
+    //     return episode;
+    //   }
+    // }
     return episode;
   }
 
@@ -246,6 +237,7 @@ class SingleChannel extends React.Component {
 const mapStateToProps = state => {
   return {
     bestCategoryPodcasts: state.podcast.bestCategoryPodcasts,
+    channelName: state.channel.activeChannel.name,
     recommendedEpisodes: state.podcast.recommendedEpisodes,
     playedEpisodes: state.podcast.playedEpisodes,
     episodeId: state.podcast.podcast.id,
@@ -255,13 +247,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    fetchCategoryPodcastsEpisodeData: podcasts =>
-      dispatch(fetchCategoryPodcastsEpisodeData(podcasts)),
+    fetchActiveChannel: channelId => dispatch(fetchActiveChannel(channelId)),
+    fetchCategoryPodcasts: genre => dispatch(fetchCategoryPodcasts(genre)),
     fetchPlayedEpisodes: channelId => dispatch(fetchPlayedEpisodes(channelId)),
     addPlayedEpisode: (episode, channelId) =>
       dispatch(addPlayedEpisode(episode, channelId)),
     fetchRecommendedEpisodes: channelId =>
       dispatch(fetchRecommendedEpisodes(channelId)),
+    removePodcast: podcast => dispatch(setRemovedBestCategoryPodcast(podcast)),
     setSinglePodcast: episode => dispatch(setSinglePodcast(episode))
   };
 };
