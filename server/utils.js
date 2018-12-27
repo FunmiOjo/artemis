@@ -34,4 +34,13 @@ const getSelectedItems = ({items, desiredNumItems, numItemsToSelectFrom}) => {
   return selectedItems;
 };
 
-module.exports = {getSelectedItems};
+const restructurePodcastObj = podcastObj => {
+  const newObj = {
+    podcastTitle: podcastObj.title,
+    imageURL: podcastObj.image,
+    ...podcastObj.episodes[0]
+  };
+  return newObj;
+};
+
+module.exports = {getSelectedItems, restructurePodcastObj};

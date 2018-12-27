@@ -1,12 +1,12 @@
-import { combineReducers } from "redux";
+import {combineReducers} from "redux";
 import podcast from "./podcast";
 import user from "./user";
-import channels from './channel'
+import channel from "./channel";
 
 const reducer = combineReducers({
   podcast,
   user,
-  channels
+  channel
 });
 
 export default reducer;

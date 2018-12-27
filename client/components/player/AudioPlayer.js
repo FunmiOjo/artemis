@@ -27,7 +27,8 @@ class AudioPlayer extends Component {
       currentTime: 0,
       isBookmark: false,
       liked: false,
-      disliked: false
+      disliked: false,
+      cancelled: false
     };
 
     this.play = this.play.bind(this);
@@ -42,58 +43,81 @@ class AudioPlayer extends Component {
   }
 
   componentDidMount() {
+    this.setState({
+      cancelled: false
+    });
     const {episode} = this.props;
     episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
     episodeAudio.load();
     episodeAudio.volume = this.state.audioVolume;
 
-    episodeAudio.addEventListener("loadedmetadata", () => {
-      this.setState({
-        audioLength: episodeAudio.duration
-      });
+    episodeAudio.addEventListener("loadedmetadata", function metaDataHandler() {
+      !this.state.cancelled &&
+        this.setState({
+          audioLength: episodeAudio.duration
+        });
     });
 
-    episodeAudio.addEventListener("timeupdate", () => {
-      this.setState({
-        currentTime: episodeAudio.currentTime
-      });
+    episodeAudio.addEventListener("timeupdate", function timeUpdateHander() {
+      !this.state.cancelled &&
+        this.setState({
+          currentTime: episodeAudio.currentTime
+        });
     });
 
-    episodeAudio.addEventListener("ended", () => {
+    episodeAudio.addEventListener("ended", function endHandler() {
       this.props.handleEpisodeEnd();
-      this.setState({
-        liked: false,
-        disliked: false
-      });
+      !this.state.cancelled &&
+        this.setState({
+          liked: false,
+          disliked: false
+        });
     });
 
-    episodeAudio.addEventListener("error", () => {
+    episodeAudio.addEventListener("error", function errorHandler() {
       this.props.handleEpisodeEnd();
-      this.setState({
-        liked: false,
-        disliked: false
-      });
+      !this.state.cancelled &&
+        this.setState({
+          liked: false,
+          disliked: false
+        });
     });
 
     this.play();
   }
 
   componentWillUnmount() {
-    episodeAudio.removeEventListener("loadedmetadata", () => {
+    !this.cancelled &&
       this.setState({
-        audioLength: this.props.episodeAudio.duration
+        cancelled: true
       });
+    episodeAudio.removeEventListener("loadedmetadata", () => {
+      !this.state.cancelled &&
+        this.setState({
+          audioLength: this.props.episodeAudio.duration
+        });
     });
     episodeAudio.removeEventListener("ended", () => {
       this.props.handleEpisodeEnd();
+      !this.state.cancelled &&
+        this.setState({
+          liked: false,
+          disliked: false
+        });
     });
     episodeAudio.removeEventListener("error", () => {
       this.props.handleEpisodeEnd();
+      !this.state.cancelled &&
+        this.setState({
+          liked: false,
+          disliked: false
+        });
     });
     episodeAudio.removeEventListener("timeupdate", () => {
-      this.setState({
-        currentTime: episodeAudio.currentTime
-      });
+      !this.state.cancelled &&
+        this.setState({
+          currentTime: episodeAudio.currentTime
+        });
     });
   }
 
@@ -107,58 +131,65 @@ class AudioPlayer extends Component {
   }
 
   handleSliderChange(event) {
-    this.setState({
-      currentTime: Number(event.target.value)
-    });
+    !this.state.cancelled &&
+      this.setState({
+        currentTime: Number(event.target.value)
+      });
     episodeAudio.currentTime = Number(event.target.value);
   }
 
   handleVolumeChange(event) {
-    this.setState({
-      audioVolume: event.target.value
-    });
+    !this.state.cancelled &&
+      this.setState({
+        audioVolume: event.target.value
+      });
     episodeAudio.volume = this.state.audioVolume;
   }
 
   play() {
     episodeAudio.play();
-    this.setState({
-      isPlaying: true
-    });
+    !this.state.cancelled &&
+      this.setState({
+        isPlaying: true
+      });
   }
 
   pause() {
     episodeAudio.pause();
-    this.setState({
-      isPlaying: false
-    });
+    !this.state.cancelled &&
+      this.setState({
+        isPlaying: false
+      });
   }
 
   handleMute() {
     var stateUnmute = this.state.unmute;
     if (stateUnmute) {
-      this.setState({
-        audioVolume: 0,
-        unmute: !stateUnmute
-      });
+      !this.state.cancelled &&
+        this.setState({
+          audioVolume: 0,
+          unmute: !stateUnmute
+        });
       episodeAudio.muted = true;
     } else {
-      this.setState({
-        audioVolume: 0.1,
-        unmute: !stateUnmute
-      });
+      !this.state.cancelled &&
+        this.setState({
+          audioVolume: 0.1,
+          unmute: !stateUnmute
+        });
       episodeAudio.muted = false;
     }
   }
 
   skip() {
     this.props.handleSkip();
-    this.setState({
-      isBookmark: false,
-      isPlaying: false,
-      liked: false,
-      disliked: false
-    });
+    !this.state.cancelled &&
+      this.setState({
+        isBookmark: false,
+        isPlaying: false,
+        liked: false,
+        disliked: false
+      });
   }
 
   like() {
@@ -171,10 +202,11 @@ class AudioPlayer extends Component {
       epTags,
       episode
     );
-    this.setState({
-      liked: !isLiked,
-      disliked: false
-    });
+    !this.state.cancelled &&
+      this.setState({
+        liked: !isLiked,
+        disliked: false
+      });
   }
 
   dislike() {
@@ -187,10 +219,11 @@ class AudioPlayer extends Component {
       epTags,
       episode
     );
-    this.setState({
-      disliked: !isDisliked,
-      liked: false
-    });
+    !this.state.cancelled &&
+      this.setState({
+        disliked: !isDisliked,
+        liked: false
+      });
   }
 
   async bookmark() {
@@ -198,7 +231,7 @@ class AudioPlayer extends Component {
     let databaseEpisode = this.props.databaseEpisodes[apiEpisode.title];
     let bookMarked = this.state.isBookmark;
     await axios.post("/api/bookmarks", {episodeId: databaseEpisode.id}); //FIX use Redux
-    this.setState({isBookmark: !bookMarked});
+    !this.state.cancelled && this.setState({isBookmark: !bookMarked});
   }
 
   currentTimeCalculation() {

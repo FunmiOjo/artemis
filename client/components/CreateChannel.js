@@ -198,28 +198,8 @@ class IntegrationAutosuggest extends React.Component {
       let matchingId = suggestions.filter(sugg => sugg.label === searchInput);
       let genreId = matchingId[0].id;
 
-      /*
-      this makes a call to the backend which retrieves a list of the best
-      podcasts in the given genre from the ListenNotes API
-      */
-      let res = await axios.get(`/api/podcast?id=${genreId}`);
-
-      /*
-      channelList is an object that contains a list of podcasts in its
-      channels property
-      */
-      let channelList = res.data;
-
-      if (channelList.channels === undefined) {
-        throw new Error("channelList is undefined");
-      }
-
-      /*
-      The best podcasts in category list does not contain episode data for those
-      podcasts so fetchCategoryPodcastsEpisodeData gets the episodes for those
-      podcasts and sets them to the Redux state
-      */
-      this.props.fetchCategoryPodcasts(channelList.channels);
+      // fetches podcast episodes for channel
+      this.props.fetchCategoryPodcasts(genreId);
 
       /*
       creates new channel

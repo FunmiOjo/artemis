@@ -82,7 +82,7 @@ class ChannelList extends Component {
 
 const mapState = state => {
   return {
-    channels: state.channels.userChannels,
+    channels: state.channel.userChannels,
     userId: state.user.id
   };
 };

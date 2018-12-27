@@ -1,5 +1,5 @@
 const axios = require("axios");
-const {getSelectedItems} = require("../utils");
+const {getSelectedItems, restructurePodcastObj} = require("../utils");
 //TODO
 
 const getRecentEpisodesFromPodcast = async podcastId => {
@@ -80,7 +80,7 @@ const getGenreEpisodes = async (genreId, desiredNumEpisodes) => {
         desiredNumItems: 1,
         numItemsToSelectFrom: podcast.episodes.length
       });
-      return podcast;
+      return restructurePodcastObj(podcast);
     }
   );
 

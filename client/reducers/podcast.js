@@ -186,7 +186,7 @@ export default function(state = initState, action) {
     case SET_REMOVED_BEST_CATEGORY_PODCAST:
       return {
         ...state,
-        bestCategoryPodcasts: bestCategoryPodcasts.filter(
+        bestCategoryPodcasts: state.bestCategoryPodcasts.filter(
           podcast => podcast.id !== action.podcast.id
         )
       };
