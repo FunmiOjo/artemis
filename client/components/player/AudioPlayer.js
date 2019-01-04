@@ -88,11 +88,8 @@ class AudioPlayer extends Component {
     episodeAudio.volume = this.state.audioVolume;
 
     episodeAudio.addEventListener("loadedmetadata", this.metaDataHandler);
-
     episodeAudio.addEventListener("timeupdate", this.timeUpdateHandler);
-
     episodeAudio.addEventListener("ended", this.endHandler);
-
     episodeAudio.addEventListener("error", this.errorHandler);
 
     this.play();
