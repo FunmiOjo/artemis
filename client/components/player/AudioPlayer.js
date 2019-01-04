@@ -40,6 +40,42 @@ class AudioPlayer extends Component {
     this.handleSliderChange = this.handleSliderChange.bind(this);
     this.bookmark = this.bookmark.bind(this);
     this.handleVolumeChange = this.handleVolumeChange.bind(this);
+    this.metaDataHandler = this.metaDataHandler.bind(this);
+    this.timeUpdateHandler = this.timeUpdateHandler.bind(this);
+    this.endHandler = this.endHandler.bind(this);
+    this.errorHandler = this.errorHandler.bind(this);
+  }
+
+  metaDataHandler() {
+    !this.state.cancelled &&
+      this.setState({
+        audioLength: episodeAudio.duration
+      });
+  }
+
+  timeUpdateHandler() {
+    !this.state.cancelled &&
+      this.setState({
+        currentTime: episodeAudio.currentTime
+      });
+  }
+
+  endHandler() {
+    this.props.handleEpisodeEnd();
+    !this.state.cancelled &&
+      this.setState({
+        liked: false,
+        disliked: false
+      });
+  }
+
+  errorHandler() {
+    this.props.handleEpisodeEnd();
+    !this.state.cancelled &&
+      this.setState({
+        liked: false,
+        disliked: false
+      });
   }
 
   componentDidMount() {
@@ -51,37 +87,13 @@ class AudioPlayer extends Component {
     episodeAudio.load();
     episodeAudio.volume = this.state.audioVolume;
 
-    episodeAudio.addEventListener("loadedmetadata", function metaDataHandler() {
-      !this.state.cancelled &&
-        this.setState({
-          audioLength: episodeAudio.duration
-        });
-    });
+    episodeAudio.addEventListener("loadedmetadata", this.metaDataHandler);
 
-    episodeAudio.addEventListener("timeupdate", function timeUpdateHander() {
-      !this.state.cancelled &&
-        this.setState({
-          currentTime: episodeAudio.currentTime
-        });
-    });
+    episodeAudio.addEventListener("timeupdate", this.timeUpdateHandler);
 
-    episodeAudio.addEventListener("ended", function endHandler() {
-      this.props.handleEpisodeEnd();
-      !this.state.cancelled &&
-        this.setState({
-          liked: false,
-          disliked: false
-        });
-    });
+    episodeAudio.addEventListener("ended", this.endHandler);
 
-    episodeAudio.addEventListener("error", function errorHandler() {
-      this.props.handleEpisodeEnd();
-      !this.state.cancelled &&
-        this.setState({
-          liked: false,
-          disliked: false
-        });
-    });
+    episodeAudio.addEventListener("error", this.errorHandler);
 
     this.play();
   }
@@ -91,34 +103,10 @@ class AudioPlayer extends Component {
       this.setState({
         cancelled: true
       });
-    episodeAudio.removeEventListener("loadedmetadata", () => {
-      !this.state.cancelled &&
-        this.setState({
-          audioLength: this.props.episodeAudio.duration
-        });
-    });
-    episodeAudio.removeEventListener("ended", () => {
-      this.props.handleEpisodeEnd();
-      !this.state.cancelled &&
-        this.setState({
-          liked: false,
-          disliked: false
-        });
-    });
-    episodeAudio.removeEventListener("error", () => {
-      this.props.handleEpisodeEnd();
-      !this.state.cancelled &&
-        this.setState({
-          liked: false,
-          disliked: false
-        });
-    });
-    episodeAudio.removeEventListener("timeupdate", () => {
-      !this.state.cancelled &&
-        this.setState({
-          currentTime: episodeAudio.currentTime
-        });
-    });
+    episodeAudio.removeEventListener("loadedmetadata", this.metaDataHandler);
+    episodeAudio.removeEventListener("timeupdate", this.timeUpdateHandler);
+    episodeAudio.removeEventListener("ended", this.endHandler);
+    episodeAudio.removeEventListener("error", this.errorHandler);
   }
 
   componentDidUpdate(prevProps) {
