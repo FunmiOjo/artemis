@@ -78,21 +78,24 @@ class AudioPlayer extends Component {
       });
   }
 
-  componentDidMount() {
-    this.setState({
-      cancelled: false
-    });
-    const {episode} = this.props;
-    episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
-    episodeAudio.load();
-    episodeAudio.volume = this.state.audioVolume;
+  async componentDidMount() {
+    try {
+      this.setState({
+        cancelled: false
+      });
+      const {episode} = this.props;
+      episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
+      episodeAudio.volume = this.state.audioVolume;
 
-    episodeAudio.addEventListener("loadedmetadata", this.metaDataHandler);
-    episodeAudio.addEventListener("timeupdate", this.timeUpdateHandler);
-    episodeAudio.addEventListener("ended", this.endHandler);
-    episodeAudio.addEventListener("error", this.errorHandler);
+      episodeAudio.addEventListener("loadedmetadata", this.metaDataHandler);
+      episodeAudio.addEventListener("timeupdate", this.timeUpdateHandler);
+      episodeAudio.addEventListener("ended", this.endHandler);
+      episodeAudio.addEventListener("error", this.errorHandler);
 
-    this.play();
+      await this.play();
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   componentWillUnmount() {
@@ -106,12 +109,15 @@ class AudioPlayer extends Component {
     episodeAudio.removeEventListener("error", this.errorHandler);
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.episode !== prevProps.episode) {
-      const {episode} = this.props;
-      episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
-      episodeAudio.load();
-      this.play();
+  async componentDidUpdate(prevProps) {
+    try {
+      if (this.props.episode !== prevProps.episode) {
+        const {episode} = this.props;
+        episodeAudio.src = episode.audio ? episode.audio : episode.audioURL;
+        await this.play();
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 
@@ -131,12 +137,16 @@ class AudioPlayer extends Component {
     episodeAudio.volume = this.state.audioVolume;
   }
 
-  play() {
-    episodeAudio.play();
-    !this.state.cancelled &&
-      this.setState({
-        isPlaying: true
-      });
+  async play() {
+    try {
+      await episodeAudio.play();
+      !this.state.cancelled &&
+        this.setState({
+          isPlaying: true
+        });
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   pause() {
