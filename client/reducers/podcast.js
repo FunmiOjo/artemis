@@ -76,48 +76,6 @@ export const fetchCategoryPodcasts = genreName => {
   };
 };
 
-// export const fetchCategoryEpisodes = () => {
-//   return async dispatch => {
-//     dispatch(setEpisodeLoadingStatus(true));
-//     let numEpisodesDesired =
-//       podcastsWithoutEpisodeData.length >= 5
-//         ? 5
-//         : podcastsWithoutEpisodeData.length;
-
-//     const indices = getRandomNonRepeatingIndices(
-//       numEpisodesDesired,
-//       podcastsWithoutEpisodeData.length
-//     );
-
-//     try {
-//       let podcastPromises = [];
-//       let podcastIndex, podcast;
-//       for (let i = 0; i < indices.length; i++) {
-//         podcastIndex = indices[i];
-//         podcast = podcastsWithoutEpisodeData[podcastIndex];
-//         if (podcast !== undefined) {
-//           podcastPromises.push(
-//             axios.get(`/api/episode/apiEpisode?id=${podcast.id}`)
-//           );
-//         }
-//       }
-//       const resolvedPodcastPromises = await Promise.all(podcastPromises);
-
-//       const podcastsWithEpisodeData = resolvedPodcastPromises.map(
-//         elem => elem.data
-//       );
-
-//       if (podcastsWithEpisodeData.length === 0) {
-//         throw new Error("podcastsWithEpisodeData is empty.");
-//       }
-//       dispatch(setBestCategoryPodcasts(podcastsWithEpisodeData));
-//       dispatch(setEpisodeLoadingStatus(false));
-//     } catch (error) {
-//       console.error(error);
-//     }
-//   };
-// };
-
 export const fetchPlayedEpisodes = channelId => {
   return async dispatch => {
     dispatch(setEpisodeLoadingStatus(true));
