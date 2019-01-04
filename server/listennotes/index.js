@@ -54,37 +54,41 @@ another request for the episodes attached to them.  In between, we select one ep
 five of the best podcasts
 */
 const getGenreEpisodes = async (genreId, desiredNumEpisodes) => {
-  const podcastsWithoutEpisodes = await getBestPodcastsInGenre(genreId);
+  try {
+    const podcastsWithoutEpisodes = await getBestPodcastsInGenre(genreId);
 
-  const desiredNumPodcasts =
-    podcastsWithoutEpisodes.length < desiredNumEpisodes
-      ? podcastsWithoutEpisodes.length
-      : desiredNumEpisodes;
+    const desiredNumPodcasts =
+      podcastsWithoutEpisodes.length < desiredNumEpisodes
+        ? podcastsWithoutEpisodes.length
+        : desiredNumEpisodes;
 
-  const numPodcastsToSelectFrom = podcastsWithoutEpisodes.length;
+    const numPodcastsToSelectFrom = podcastsWithoutEpisodes.length;
 
-  const selectedPodcasts = getSelectedItems({
-    items: podcastsWithoutEpisodes,
-    desiredNumItems: desiredNumPodcasts,
-    numItemsToSelectFrom: numPodcastsToSelectFrom
-  });
+    const selectedPodcasts = getSelectedItems({
+      items: podcastsWithoutEpisodes,
+      desiredNumItems: desiredNumPodcasts,
+      numItemsToSelectFrom: numPodcastsToSelectFrom
+    });
 
-  const selectedPodcastsWithEpisodes = await getRecentEpisodesFromPodcasts(
-    selectedPodcasts
-  );
+    const selectedPodcastsWithEpisodes = await getRecentEpisodesFromPodcasts(
+      selectedPodcasts
+    );
 
-  const selectedPodcastsWithSelectedEpisodes = selectedPodcastsWithEpisodes.map(
-    podcast => {
-      podcast.episodes = getSelectedItems({
-        items: podcast.episodes,
-        desiredNumItems: 1,
-        numItemsToSelectFrom: podcast.episodes.length
-      });
-      return restructurePodcastObj(podcast);
-    }
-  );
+    const selectedPodcastsWithSelectedEpisodes = selectedPodcastsWithEpisodes.map(
+      podcast => {
+        podcast.episodes = getSelectedItems({
+          items: podcast.episodes,
+          desiredNumItems: 1,
+          numItemsToSelectFrom: podcast.episodes.length
+        });
+        return restructurePodcastObj(podcast);
+      }
+    );
 
-  return selectedPodcastsWithSelectedEpisodes;
+    return selectedPodcastsWithSelectedEpisodes;
+  } catch (error) {
+    return error;
+  }
 };
 
 module.exports = {getGenreEpisodes};

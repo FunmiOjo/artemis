@@ -36,10 +36,9 @@ const setActiveChannel = channel => {
   };
 };
 
-const updatedActiveChannelTags = channel => {
+const updatedActiveChannelTags = () => {
   return {
-    type: UPDATED_ACTIVE_CHANNEL_TAGS,
-    channel
+    type: UPDATED_ACTIVE_CHANNEL_TAGS
   };
 };
 
@@ -86,7 +85,7 @@ export const updateActiveChannelTags = (channelId, method, epTags, episode) => {
           episode: currentEpisode
         }
       );
-      dispatch(updatedActiveChannelTags(channel));
+      dispatch(updatedActiveChannelTags());
     } catch (err) {
       console.error(err);
     }
@@ -126,8 +125,7 @@ const reducer = (state = initialState, action) => {
     }
     case UPDATED_ACTIVE_CHANNEL_TAGS: {
       return {
-        ...state,
-        activeChannel: action.channel
+        ...state
       };
     }
     default:

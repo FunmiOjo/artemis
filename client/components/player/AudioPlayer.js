@@ -182,7 +182,7 @@ class AudioPlayer extends Component {
     let episode = this.props.episode;
     let epTags = this.props.tags;
     this.props.updatedActiveChannelTags(
-      episode.channelId,
+      this.props.activeChannelId,
       "like",
       epTags,
       episode
@@ -199,7 +199,7 @@ class AudioPlayer extends Component {
     let episode = this.props.episode;
     let epTags = this.props.tags;
     this.props.updatedActiveChannelTags(
-      episode.channelId,
+      this.props.activeChannelId,
       "dislike",
       epTags,
       episode
@@ -314,7 +314,8 @@ class AudioPlayer extends Component {
 
 const mapStateToProps = state => {
   return {
-    databaseEpisodes: state.podcast.playedEpisodes
+    databaseEpisodes: state.podcast.playedEpisodes,
+    activeChannelId: state.channel.activeChannel.id
   };
 };
 

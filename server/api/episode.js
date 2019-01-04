@@ -6,6 +6,7 @@ const Recommender = require('../../recommendations/collab');
 module.exports = router;
 
 router.get('/', async (req, res, next) => {
+	console.log('REQ.QUERY --------------------------------------------------------------------', req.query)
 	try {
 		if (req.query) {
 			const episodes = await Episode.findAll({
