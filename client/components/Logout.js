@@ -1,9 +1,8 @@
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import { logout } from '../reducers/user';
-import { connect } from 'react-redux';
+import Button from "@material-ui/core/Button";
+import React from "react";
+import {withStyles} from "@material-ui/core/styles";
+import {logout} from "../reducers/user";
+import {connect} from "react-redux";
 
 const styles = theme => ({
   button: {
@@ -13,7 +12,7 @@ const styles = theme => ({
 });
 
 const Logout = props => {
-  const { handleClick, isLoggedIn, classes } = props;
+  const {handleClick, isLoggedIn, classes} = props;
 
   return isLoggedIn ? (
     <Button
@@ -24,7 +23,7 @@ const Logout = props => {
       Logout
     </Button>
   ) : (
-    ''
+    ""
   );
 };
 

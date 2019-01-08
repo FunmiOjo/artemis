@@ -1,14 +1,11 @@
-const router = require('express').Router();
-const unirest = require('unirest');
-var timeout = require('connect-timeout');
-let descriptions = require('../../descriptions');
-const Tag = require('../db/models/tag');
-const ChannelTag = require('../db/models/channelTag');
-const sw = require('stopword');
-var WordPOS = require('wordpos');
-let wordpos = new WordPOS({ stopwords: true });
+const router = require("express").Router();
+let descriptions = require("../../descriptions");
+const Tag = require("../db/models/tag");
+const ChannelTag = require("../db/models/channelTag");
+var WordPOS = require("wordpos");
+let wordpos = new WordPOS({stopwords: true});
 
-var natural = require('natural');
+var natural = require("natural");
 var TfIdf = natural.TfIdf;
 var tfidf = new TfIdf();
 
@@ -682,54 +679,53 @@ www
 site
 us`;
 
-const myStopwords = string.split('\n');
+const myStopwords = string.split("\n");
 
 function exclude(text) {
-	return text.filter((word) => !myStopwords.includes(word));
+  return text.filter(word => !myStopwords.includes(word));
 }
 
-router.get('/', async (req, res, next) => {
-	try {
-		let channelId = req.query.channelId;
-		let input = req.query.input.toLowerCase();
-		let inputFiltered = await wordpos.getNouns(input, exclude);
-		let descriptionsArr = descriptions.slice(0, 10);
-		descriptionsArr.forEach((each) => {
-			tfidf.addDocument(each);
-		});
-		let tagArray = inputFiltered.filter(async (each) => {
-			let allDes = 0;
-			let currentTag;
+router.get("/", async (req, res, next) => {
+  try {
+    let channelId = req.query.channelId;
+    let input = req.query.input.toLowerCase();
+    let inputFiltered = await wordpos.getNouns(input, exclude);
+    let descriptionsArr = descriptions.slice(0, 10);
+    descriptionsArr.forEach(each => {
+      tfidf.addDocument(each);
+    });
+    let tagArray = inputFiltered.filter(async each => {
+      let allDes = 0;
 
-			tfidf.tfidfs(each, function(i, measure) {
-				currentTag = each;
-				allDes += measure;
-			});
-			let tagRating = allDes / descriptionsArr.length;
-			return tagRating > 0.2 || tagRating === 0;
-		});
+      tfidf.tfidfs(each, function(i, measure) {
+        currentTag = each;
+        allDes += measure;
+      });
+      let tagRating = allDes / descriptionsArr.length;
+      return tagRating > 0.2 || tagRating === 0;
+    });
 
-		tagArray.forEach(async (currentTag) => {
-			let tagId;
-			let tag = await Tag.findOrCreate({
-				where: {
-					name: currentTag.toLowerCase()
-				}
-			});
-			tagId = await tag[0].id;
-			let previousTag = await ChannelTag.findById(tagId);
-			if (!previousTag) {
-				await ChannelTag.create({
-					channelId: channelId,
-					tagId: tagId,
-					score: 0.5
-				});
-			}
-		});
+    tagArray.forEach(async currentTag => {
+      let tagId;
+      let tag = await Tag.findOrCreate({
+        where: {
+          name: currentTag.toLowerCase()
+        }
+      });
+      tagId = await tag[0].id;
+      let previousTag = await ChannelTag.findById(tagId);
+      if (!previousTag) {
+        await ChannelTag.create({
+          channelId: channelId,
+          tagId: tagId,
+          score: 0.5
+        });
+      }
+    });
 
-		res.json(inputFiltered);
-	} catch (err) {
-		next(err);
-	}
+    res.json(inputFiltered);
+  } catch (err) {
+    next(err);
+  }
 });
 module.exports = router;

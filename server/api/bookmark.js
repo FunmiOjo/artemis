@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { Channel, Bookmark, Episode, ChannelEpisode } = require("../db/models");
+const {Bookmark} = require("../db/models");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -10,7 +10,7 @@ router.get("/", async (req, res, next) => {
         userId: user.id
       }
     });
-    console.log('.........................................BOOKMARKS', bookmarks)
+
     res.status(200).send(bookmarks);
   } catch (err) {
     next(err);
@@ -18,7 +18,6 @@ router.get("/", async (req, res, next) => {
 });
 
 router.post("/", async (req, res, next) => {
-
   try {
     let bookmarkObj = req.body;
     bookmarkObj.userId = req.user.id;

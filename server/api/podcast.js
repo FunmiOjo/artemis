@@ -1,18 +1,21 @@
 const router = require("express").Router();
-const unirest = require("unirest");
+const {getGenreEpisodes} = require("../listennotes");
+
+router.get("/one", async (req, res, next) => {
+  try {
+    const id = req.query.id;
+    const selectedPodcasts = await getGenreEpisodes(id, 1);
+    res.status(200).send(selectedPodcasts);
+  } catch (err) {
+    next(err);
+  }
+});
 
 router.get("/", async (req, res, next) => {
   try {
-    let id = req.query.id;
-    unirest
-      .get(
-        `https://listennotes.p.mashape.com/api/v1/best_podcasts?genre_id=${id}&page=1`
-      )
-      .header("X-Mashape-Key", process.env.xMashKey)
-      .header("Accept", "application/json")
-      .end(function(result) {
-        res.status(200).send(result.body);
-      });
+    const id = req.query.id;
+    const selectedPodcasts = await getGenreEpisodes(id, 5);
+    res.status(200).send(selectedPodcasts);
   } catch (err) {
     next(err);
   }

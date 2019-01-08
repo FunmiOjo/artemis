@@ -1,10 +1,3 @@
-//Title
-// Date?
-// Description
-// Image
-// Audio URL
-// Length
-
 const Sequelize = require("sequelize");
 const db = require("../db");
 
