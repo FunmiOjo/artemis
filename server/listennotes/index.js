@@ -84,10 +84,6 @@ const getGenreEpisodes = async (genreId, desiredNumEpisodes) => {
         return restructurePodcastObj(podcast);
       }
     );
-    console.log(
-      "selectedPodcastsWithSelectedEpisodes ------------------------------------------------------------------------",
-      selectedPodcastsWithSelectedEpisodes
-    );
     return selectedPodcastsWithSelectedEpisodes;
   } catch (error) {
     return error;
